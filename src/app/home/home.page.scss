@@ -6,11 +6,13 @@ ion-segment{
    padding: 30px 5px;
  }
  
- .submit{
-   height: 44px;
-   --border-radius: 10px;
-   --background: var(--ion-color-tertiary);
- }
+ .submit {
+  height: 44px;
+  --border-radius: 10px;
+  --background: var(--ion-color-tertiary);
+  width: 100%; /* Asegura que el botón ocupe todo el espacio */
+}
+
  
  .scan-label{
    margin: 25px 0;
@@ -61,11 +63,12 @@ ion-segment{
    width: 200px; 
  }
  
- .d-flex-center{
-   display: flex;
-   justify-content: center;
-   align-items: center;
- }
+ .d-flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
  
  
  

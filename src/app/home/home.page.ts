@@ -15,7 +15,7 @@ export class HomePage implements OnInit {
 
   segment = 'Scan'
   qrText = ''
-  scanResult = 'benjyy'
+  scanResult = ''
 
   constructor(
     private platform: Platform,
