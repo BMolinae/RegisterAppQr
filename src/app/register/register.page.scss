@@ -1,61 +1,84 @@
 ion-header {
-    background-color: #ffffff; 
-  
-  
-    ion-toolbar {
-        --background: #f8f9fa;
-        ion-title {
-          color: #000000; 
+  background-color: #ffffff;
+
+  ion-toolbar {
+      --background: #f8f9fa;
+      display: flex; /* Flexbox para alinear contenido */
+      justify-content: center; /* Centra el contenido horizontalmente */
+      align-items: center; /* Centra el contenido verticalmente */
+      position: relative; /* Permite el posicionamiento absoluto de los botones */
+
+      ion-title {
+          color: #000000;
           font-size: 1.5rem;
           text-align: center;
-        }
-    
-        ion-back-button {
-          color:#003366;
-        }
+          position: absolute; /* Coloca el título de manera absoluta */
+          left: 50%; /* Mueve el título al centro */
+          transform: translateX(-50%); /* Compensa para centrarlo correctamente */
+          width: max-content; /* Evita que el título se estire */
+          margin-top: 0; /* Elimina el margen superior */
+      }
+
+      ion-buttons {
+          position: absolute; /* Posiciona los botones de manera absoluta */
+          left: 0; /* Los posiciona a la izquierda */
+      }
+
+      ion-back-button {
+          color: #003366;
       }
   }
-  
-  ion-content {
-    --background: #ffffff !important; 
-    padding: 20px;
-  
-    ion-item {
-      background-color: #000000;
-      border-radius: 10px;
-  
+}
+
+ion-content {
+  background: #003366; /* Fondo uniforme */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinea los elementos desde arriba */
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+
+  picture {
+      display: block;
+      text-align: center;
+      margin-top: 50px; /* Empuja el logo hacia abajo */
+      margin-bottom: 40px; /* Espaciado con los inputs */
+  }
+
+  .logo {
+      display: block;
+      margin: 0 auto;
+      width: 200px; /* Aumentar el tamaño del logo */
+      height: auto;
+  }
+
+  ion-item {
+      width: 100%;
+      max-width: 400px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+
       ion-label {
-        color: #000000; 
-        font-size: 1.1rem;
-        font-family: 'Arial', sans-serif; 
+          color: #003366;
+          font-size: 1.1rem;
+          font-family: 'Arial', sans-serif;
       }
-  
+
       ion-input {
-        color: #003366; 
+          color: #003366;
       }
-    }
-  
-    ion-button {
-      --background: #f0db4f; 
-      --color: #003366; 
+  }
+
+  ion-button {
+      --background: #f0db4f;
+      --color: #003366;
       font-size: 1.2rem;
       text-transform: uppercase;
-      border-radius: 8px;
-      --border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
       margin-top: 20px;
-    }
-  
-    ion-button[fill="clear"] {
-      color: #003366; 
-      font-size: 0.9rem;
-      border-radius: 10px;
-    }
-  
-    ion-img.logo {
-      display: block;
-      margin: 20px auto;
-      width: 200px; 
-      height: auto;
-      margin-top: 50px;
-    }
+      border-radius: 8px;
   }
+}

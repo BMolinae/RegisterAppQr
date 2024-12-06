@@ -66,6 +66,58 @@ ion-segment{
      justify-content: center;
      align-items: center;
    }
+
+   /* Estilo para el menú desplegable de clases */
+ion-item {
+  --padding-start: 10px;
+  --inner-padding-end: 10px;
+  font-size: 14px; /* Ajusta el tamaño del texto */
+}
+
+ion-select {
+  width: 100%; /* Hace que el menú ocupe todo el ancho disponible */
+  max-width: 400px; /* Establece un ancho máximo */
+  --placeholder-color: #888; /* Color para el placeholder */
+  --padding-start: 15px; /* Ajusta el espaciado interior */
+  text-overflow: ellipsis; /* Muestra "..." si el texto es muy largo */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Opciones del ion-select (en el popover o action sheet) */
+ion-select-option {
+  font-size: 14px; /* Ajusta el tamaño del texto */
+  padding: 8px 12px; /* Agrega espacio entre las opciones */
+  white-space: nowrap; /* Mantiene todo en una línea */
+  text-overflow: ellipsis; /* Corta con "..." si es necesario */
+  overflow: hidden; /* Oculta el desbordamiento */
+}
+
+/* Mejora de los textos largos en el listado */
+ion-select-option:hover {
+  background: #f1f1f1; /* Cambia el color al pasar el ratón */
+}
+
+/* Título y espaciado del contenedor */
+.segment-content {
+  margin: 20px 0;
+}
+
+h6 {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+/* Botón "Share" */
+ion-button.submit {
+  background-color: #4caf50; /* Verde para destacar */
+  color: #fff;
+  margin-top: 20px;
+}
+
+
    
    
    

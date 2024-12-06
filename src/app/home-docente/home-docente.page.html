@@ -1,6 +1,5 @@
 <ion-content>
- 
- <ion-menu contentId="main-content">
+  <ion-menu contentId="main-content">
     <ion-header>
       <ion-toolbar>
         <ion-title>Menu Content</ion-title>
@@ -10,6 +9,7 @@
       </ion-item>
     </ion-header>
   </ion-menu>
+  
   <div class="ion-page" id="main-content">
     <ion-header>
       <ion-toolbar>
@@ -23,29 +23,37 @@
 
   <h6>Generate QR</h6>
 
-  <!-- Generate QR -->
   <div class="segment" *ngIf="segment === 'Generate'">
     <div class="segment-content">
+      <!-- QR Code -->
       <div id="qrImage">
         <div class="d-flex-center">
           <div class="d-flex-center qr-wrapper">
-            <qr-code  *ngIf="qrText" [value]="qrText" size="190" errorCorrectionLevel="M" />
+            <qr-code *ngIf="qrText" [value]="qrText" size="190" errorCorrectionLevel="M"></qr-code>
             <img *ngIf="!qrText" class="qr-placeholder" src="./assets/images/qr.webp" alt="">
           </div>
-
         </div>
-        <div class="ion-padding-top">{{qrText}}</div>
       </div>
 
-      <ion-textarea label="Write something to convert to QR Code" labelPlacement="stacked" fill="outline"
-        [(ngModel)]="qrText" rows="4" [autoGrow]="true"></ion-textarea>
+      <!-- Dropdown menu to select class -->
+      <ion-item>
+        <ion-label>Seleccione una clase</ion-label>
+        <ion-select placeholder="Seleccione" (ionChange)="onClassChange($event)" interface="popover">
+          <ion-select-option [value]="null">
+            Predeterminado
+          </ion-select-option>
+          <ion-select-option *ngFor="let clase of clases" [value]="clase">
+            {{ clase.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
 
-      <!-- Share QR-->
-      <ion-button (click)="captureScreen()" *ngIf="qrText" class="sumbit ion-marigin-top" expand="block">
+      <!-- Share QR -->
+      <ion-button (click)="captureScreen()" *ngIf="qrText" class="submit ion-margin-top" expand="block">
         Share
         <ion-icon slot="end" name="share-social-outline"></ion-icon>
       </ion-button>
     </div>
   </div>
-
 </ion-content>
+ 

@@ -13,65 +13,70 @@ import { Router } from '@angular/router';
   styleUrls: ['home-docente.page.scss'],
 })
 export class HomeDocentePage implements OnInit {
-
-  segment = 'Generate'
-  qrText = ''
-  scanResult = 'benjyy'
+  segment = 'Generate';
+  qrText = ''; // Texto que se genera para el QR
+  clases = [
+    { nombre: 'ARQUITECTURA', seccion: 'ASY4131-012D', sala: 'L3', profesor: 'EMILIO GONZALO SOTO ROJAS', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'CALIDAD DE SOFTWARE', seccion: 'CSY4111-011D', sala: 'L5', profesor: 'PATRICIO ANDRES SOTO SERDIO', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'ESTADÍSTICA DESCRIPTIVA', seccion: 'MAT4140-012D', sala: 'L3', profesor: 'KATHERINE DEL CARMEN ENCINA ALARCON', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'INGLÉS INTERMEDIO', seccion: 'INI5111-019D', sala: '607', profesor: 'GUSTAVO ALEJANDRO ARIAS BECERRA', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'PROCESO DE PORTAFOLIO FINAL', seccion: 'PY41447-005D', sala: '806', profesor: 'PATRICIO ANDRES SOTO SERDIO', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'PROGRAMACIÓN DE APLICACIONES MÓVILES', seccion: 'PGY4121-012D', sala: 'L9', profesor: 'CARLOS FERNANDO MARTINEZ SANCHEZ', mostrarAsistencia: false, asistencias: [] },
+    { nombre: 'ÉTICA PARA EL TRABAJO', seccion: 'EAY4450-300D', sala: '503', profesor: 'ESTEBAN SALVATIERRA ROMAN', mostrarAsistencia: false, asistencias: [] },
+  ];
 
   constructor(
     private loadingController: LoadingController,
     private platform: Platform,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-
     if (this.platform.is('capacitor')) {
-
       BarcodeScanner.isSupported().then();
       BarcodeScanner.checkPermissions().then();
       BarcodeScanner.removeAllListeners();
     }
-
   }
 
   cerrarSesion() {
     this.authService.logout();
-    this.router.navigate(['/login']); 
+    this.router.navigate(['/login']);
   }
 
+  onClassChange(event: any) {
+    const claseSeleccionada = event.detail.value;
+  
+    if (!claseSeleccionada) {
+      this.qrText = 'Predeterminado';
+    } else {
+      this.qrText = `${claseSeleccionada.nombre}|${claseSeleccionada.seccion}|${claseSeleccionada.sala}|`;
+    }
+  }
+  
 
   captureScreen() {
-
     const elemnt = document.getElementById('qrImage') as HTMLElement;
 
     html2canvas(elemnt).then((canvas: HTMLCanvasElement) => {
-
       this.downloadImage(canvas);
       if (this.platform.is('capacitor')) this.ShareImage(canvas);
       else this.downloadImage(canvas);
-
-    })
-
+    });
   }
 
-  //  Download image web 
+  // Métodos existentes para descarga y compartir
   downloadImage(canvas: HTMLCanvasElement) {
-
     const link = document.createElement('a');
     link.href = canvas.toDataURL();
     link.download = 'qr.png';
     link.click();
-
   }
 
-  //  Share image mobile
   async ShareImage(canvas: HTMLCanvasElement) {
-
-    let base64 = canvas.toDataURL();
-    let path = 'qr.png';
-
+    const base64 = canvas.toDataURL();
+    const path = 'qr.png';
 
     const loading = await this.loadingController.create({ spinner: 'crescent' });
     await loading.present();
@@ -81,21 +86,19 @@ export class HomeDocentePage implements OnInit {
       data: base64,
       directory: Directory.Cache,
     }).then(async (res) => {
-
-      let uri = res.uri;
+      const uri = res.uri;
 
       await Share.share({ url: uri });
 
       await Filesystem.deleteFile({
         path,
-        directory: Directory.Cache
-      })
+        directory: Directory.Cache,
+      });
     }).finally(() => {
       loading.dismiss();
-    })
+    });
   }
+}
 
-
-};
 
 

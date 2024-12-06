@@ -69,6 +69,23 @@ ion-segment{
   align-items: center;
 }
 
- 
+ion-item-group {
+  margin-bottom: 15px;
+}
+
+ion-item {
+  --background: #f9f9f9;
+  --border-radius: 8px;
+}
+
+ion-list {
+  margin-top: 10px;
+}
+
+.submit {
+  --background: var(--ion-color-primary);
+  color: #fff;
+}
+
  
  
