@@ -1,0 +1,39 @@
+ion-content {
+    --background: #ffffff !important;
+    padding: 20px;
+
+    .Logo{
+        margin-top: 90px;
+    }
+
+    .tittle{
+        text-align: center;
+        margin-top: 80px;
+        font-size: 2.7rem;
+    }
+
+    .center-content{
+        text-align: center;
+    }
+
+    .center-content h1{
+        margin-top: 100px;
+    }
+
+    .page-tittle{
+        color: #003366;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    ion-button{
+        --background: #f0db4f;
+        --color: #003366;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        border-radius: 8px;
+        --border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+}

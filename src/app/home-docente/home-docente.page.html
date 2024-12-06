@@ -1,0 +1,51 @@
+<ion-content>
+ 
+ <ion-menu contentId="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu Content</ion-title>
+      </ion-toolbar>
+      <ion-item button (click)="cerrarSesion()">
+        <ion-label>Cerrar Sesión</ion-label>
+      </ion-item>
+    </ion-header>
+  </ion-menu>
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Bienvenido</ion-title>
+      </ion-toolbar>
+    </ion-header>
+  </div>
+
+  <h6>Generate QR</h6>
+
+  <!-- Generate QR -->
+  <div class="segment" *ngIf="segment === 'Generate'">
+    <div class="segment-content">
+      <div id="qrImage">
+        <div class="d-flex-center">
+          <div class="d-flex-center qr-wrapper">
+            <qr-code  *ngIf="qrText" [value]="qrText" size="190" errorCorrectionLevel="M" />
+            <img *ngIf="!qrText" class="qr-placeholder" src="./assets/images/qr.webp" alt="">
+          </div>
+
+        </div>
+        <div class="ion-padding-top">{{qrText}}</div>
+      </div>
+
+      <ion-textarea label="Write something to convert to QR Code" labelPlacement="stacked" fill="outline"
+        [(ngModel)]="qrText" rows="4" [autoGrow]="true"></ion-textarea>
+
+      <!-- Share QR-->
+      <ion-button (click)="captureScreen()" *ngIf="qrText" class="sumbit ion-marigin-top" expand="block">
+        Share
+        <ion-icon slot="end" name="share-social-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>
