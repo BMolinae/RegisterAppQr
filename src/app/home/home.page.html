@@ -1,78 +1,52 @@
+<ion-menu side="start" menuId="first" contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item button (click)="cerrarSesion()">Cerrar sesión</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
 
-<ion-content class="ion-padding ion-text-center">
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mis Clases</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-menu contentId="main-content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Menu Content</ion-title>
-      </ion-toolbar>
-      <ion-item button (click)="cerrarSesion()">
-        <ion-label>Cerrar Sesión</ion-label>
+<ion-content id="main-content" class="ion-padding">
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="Scan">
+      Escanear
+    </ion-segment-button>
+    <ion-segment-button value="Asistencia">
+      Asistencia
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Sección de escaneo -->
+  <div *ngIf="segment === 'Scan'" class="scan-container">
+    <ion-img src="assets/images/scan-qr.webp" class="scan-image"></ion-img>
+    <ion-button expand="block" (click)="startScan()">Iniciar Escaneo</ion-button>
+  </div>
+
+  <!-- Sección de Asistencias -->
+  <div *ngIf="segment === 'Asistencia'">
+    <ion-list>
+      <ion-item *ngFor="let clase of assignments">
+        <ion-label>
+          <h2>{{ clase.nombre }}</h2>
+          <p>Sección: {{ clase.seccion }} - Sala: {{ clase.sala }}</p>
+        </ion-label>
+        <ion-button (click)="mostrarAsistencia(clase)">Mostrar Asistencias</ion-button>
+        <ion-button (click)="mostrarHorario(clase)">Ver Horarios</ion-button>
       </ion-item>
-    </ion-header>
-  </ion-menu>
-  <div class="ion-page" id="main-content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>Bienvenido</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    </ion-list>
   </div>
-
-  <h6>Scan QR</h6>
-
-<!-- Scan QR-->
-<div *ngIf="segment === 'Scan'">
-  <div class="segment">
-    <img src="./assets/images/scan-qr.webp" alt="">
-    <h6 class="scan-label">Scan or select an image of a QR code to get its value</h6>
-
-    <!-- Contenedor centrado con ion-grid -->
-    <div class="d-flex-center">
-      <ion-grid>
-        <ion-row>
-          <ion-col size="12" class="ion-text-center">
-            <ion-button (click)="startScan()" class="submit" expand="block">
-              Scan
-              <ion-icon slot="end" name="scan-outline"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-
-    <!-- Scan Result-->
-    <ion-item class="result" *ngIf="scanResult" lines="none">
-      <ion-label>
-        <p>Scan Result</p>
-        <div>{{scanResult}}</div>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button color="tertiary" (click)="writeToClipboard()">
-          <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </div>
-</div>
-
-<ion-list>
-  <ion-item *ngFor="let clase of clasesEstudiante">
-    <ion-label>
-      <h2>{{ clase.nombre }}</h2>
-      <p> Sección: {{ clase.seccion }} </p>
-      <p> Sala: {{ clase.sala }} </p>
-      <p> Profesor: {{ clase.profesor }} </p>
-    </ion-label>
-    <ion-button (click)="mostrarAsistencias(clase)" slot="end">
-       Ver asistencias
-    </ion-button>
-  </ion-item>
-</ion-list>
-
-
-  
 </ion-content>

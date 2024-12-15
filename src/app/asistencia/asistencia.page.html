@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Asistencias</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="clase">
+    <ion-card-header>
+      <ion-card-title>Detalles de la Asignatura</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Nombre:</strong> {{ clase.nombre }}</p>
+      <p><strong>Sección:</strong> {{ clase.seccion }}</p>
+      <p><strong>Sala:</strong> {{ clase.sala }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Asistencias Registradas</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let asistencia of clase.asistencias">
+      <ion-label>
+        <h2>{{ asistencia.fecha }}</h2>
+        <p>{{ asistencia.claseInfo }} - Sección: {{ asistencia.seccion }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="!clase.asistencias || clase.asistencias.length === 0">
+    <ion-card-header>
+      <ion-card-title>No hay asistencias registradas</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+</ion-content>

@@ -16,6 +16,7 @@ import {
   StartScanOptions,
 } from '@capacitor-mlkit/barcode-scanning';
 import { ModalController } from '@ionic/angular';
+import { AssignmentService } from '../services/assignment.service';
 
 
 @Component({
@@ -33,12 +34,7 @@ import { ModalController } from '@ionic/angular';
 
     <ion-content>
       <div #square class="square"></div>
-      <ion-fab
-        *ngIf="isTorchAvailable"
-        slot="fixed"
-        horizontal="end"
-        vertical="bottom"
-      >
+      <ion-fab *ngIf="isTorchAvailable" slot="fixed" horizontal="end" vertical="bottom">
         <ion-fab-button (click)="toggleTorch()">
           <ion-icon name="flashlight"></ion-icon>
         </ion-fab-button>
@@ -48,39 +44,59 @@ import { ModalController } from '@ionic/angular';
   styles: [
     `
       ion-content {
-        --background: transparent;
-      }
+  --background: transparent;
+  position: relative;
+}
+  .scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro para dar foco al área del escáner */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
       .square {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        border-radius: 16px;
-        width: 200px;
-        height: 200px;
-        border: 6px solid white;
-        box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
-      }
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border: 6px solid #00bfff;
+  border-radius: 16px;
+  animation: pulse 1.5s infinite ease-in-out;
+  background: transparent;
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3); /* Fondo que permite ver solo el área activa */
+}
+
+      @keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
     `,
   ],
 })
 export class BarcodeScanningModalComponent
   implements OnInit, AfterViewInit, OnDestroy {
-  @Input()
-  public formats: BarcodeFormat[] = [];
-  @Input()
-  public lensFacing: LensFacing = LensFacing.Back;
-
-  @ViewChild('square')
-  public squareElement: ElementRef<HTMLDivElement> | undefined;
+  @Input() public formats: BarcodeFormat[] = [];
+  @Input() public lensFacing: LensFacing = LensFacing.Back;
+  @ViewChild('square') public squareElement: ElementRef<HTMLDivElement> | undefined;
 
   public isTorchAvailable = false;
 
   constructor(
     private readonly ngZone: NgZone,
-    private modalController: ModalController
-  ) { }
+    private modalController: ModalController,
+    private assignmentService: AssignmentService
+  ) {}
 
   public ngOnInit(): void {
     BarcodeScanner.isTorchAvailable().then((result) => {
@@ -107,7 +123,6 @@ export class BarcodeScanningModalComponent
   }
 
   private async startScan(): Promise<void> {
-    // Hide everything behind the modal (see `src/theme/variables.scss`)
     document.querySelector('body')?.classList.add('barcode-scanning-active');
 
     const options: StartScanOptions = {
@@ -115,64 +130,30 @@ export class BarcodeScanningModalComponent
       lensFacing: this.lensFacing,
     };
 
-    const squareElementBoundingClientRect =
-      this.squareElement?.nativeElement.getBoundingClientRect();
-    const scaledRect = squareElementBoundingClientRect
-      ? {
-        left: squareElementBoundingClientRect.left * window.devicePixelRatio,
-        right:
-          squareElementBoundingClientRect.right * window.devicePixelRatio,
-        top: squareElementBoundingClientRect.top * window.devicePixelRatio,
-        bottom:
-          squareElementBoundingClientRect.bottom * window.devicePixelRatio,
-        width:
-          squareElementBoundingClientRect.width * window.devicePixelRatio,
-        height:
-          squareElementBoundingClientRect.height * window.devicePixelRatio,
-      }
-      : undefined;
-    const detectionCornerPoints = scaledRect
-      ? [
-        [scaledRect.left, scaledRect.top],
-        [scaledRect.left + scaledRect.width, scaledRect.top],
-        [
-          scaledRect.left + scaledRect.width,
-          scaledRect.top + scaledRect.height,
-        ],
-        [scaledRect.left, scaledRect.top + scaledRect.height],
-      ]
-      : undefined;
     const listener = await BarcodeScanner.addListener(
       'barcodeScanned',
       async (event) => {
         this.ngZone.run(() => {
-          const cornerPoints = event.barcode.cornerPoints;
-          if (detectionCornerPoints && cornerPoints) {
-            if (
-              detectionCornerPoints[0][0] > cornerPoints[0][0] ||
-              detectionCornerPoints[0][1] > cornerPoints[0][1] ||
-              detectionCornerPoints[1][0] < cornerPoints[1][0] ||
-              detectionCornerPoints[1][1] > cornerPoints[1][1] ||
-              detectionCornerPoints[2][0] < cornerPoints[2][0] ||
-              detectionCornerPoints[2][1] < cornerPoints[2][1] ||
-              detectionCornerPoints[3][0] > cornerPoints[3][0] ||
-              detectionCornerPoints[3][1] < cornerPoints[3][1]
-            ) {
-              return;
-            }
-          }
-          listener.remove();
-          this.closeModal(event.barcode);
+          const barcodeData = event.barcode;
+          const assignmentId = barcodeData.displayValue; // Suponemos que el QR contiene el ID de la asignatura
+
+          // Agregar la asistencia a la asignatura
+          this.assignmentService.registerAttendance(assignmentId, {
+            asignatura: barcodeData.displayValue,
+            fecha: new Date(),
+          });
+
+          // Cerrar modal después de registrar
+          this.closeModal(barcodeData);
         });
       }
     );
+
     await BarcodeScanner.startScan(options);
   }
 
   private async stopScan(): Promise<void> {
-    // Show everything behind the modal again
     document.querySelector('body')?.classList.remove('barcode-scanning-active');
-
     await BarcodeScanner.stopScan();
   }
 }

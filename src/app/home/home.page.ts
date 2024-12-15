@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, Platform, ToastController } from '@ionic/angular';
-import { BarcodeScanningModalComponent } from './barcode-scanning-modal.component';
-import { LensFacing, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
-import { Clipboard } from '@capacitor/clipboard';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { AlertController, ModalController, Platform, ToastController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { Clase } from './clase.model';
+import { BarcodeScanningModalComponent } from './barcode-scanning-modal.component';
+import { AssignmentService } from '../services/assignment.service';
 
 @Component({
   selector: 'app-home',
@@ -13,102 +11,136 @@ import { Clase } from './clase.model';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-
-  segment = 'Scan'
-  qrText = ''
-  scanResult = ''
-
-  clasesEstudiante: Clase[] = [
-    { nombre: 'ARQUITECTURA', seccion: 'ASY4131-012D', sala: 'L3', profesor: 'EMILIO GONZALO SOTO ROJAS', asistencias: [] },
-    { nombre: 'CALIDAD DE SOFTWARE', seccion: 'CSY4111-011D', sala: 'L5', profesor: 'PATRICIO ANDRES SOTO SERDIO', asistencias: [] },
-    { nombre: 'ESTADÍSTICA DESCRIPTIVA', seccion: 'MAT4140-012D', sala: 'L3', profesor: 'KATHERINE DEL CARMEN ENCINA ALARCON', asistencias: [] },
-    { nombre: 'INGLÉS INTERMEDIO', seccion: 'INI5111-019D', sala: '607', profesor: 'GUSTAVO ALEJANDRO ARIAS BECERRA', asistencias: [] },
-    { nombre: 'PROCESO DE PORTAFOLIO FINAL', seccion: 'PY41447-005D', sala: '806', profesor: 'PATRICIO ANDRES SOTO SERDIO', asistencias: [] },
-    { nombre: 'PROGRAMACIÓN DE APLICACIONES MÓVILES', seccion: 'PGY4121-012D', sala: 'L9', profesor: 'CARLOS FERNANDO MARTINEZ SANCHEZ', asistencias: [] },
-    { nombre: 'ÉTICA PARA EL TRABAJO', seccion: 'EAY4450-300D', sala: '503', profesor: 'ESTEBAN SALVATIERRA ROMAN', asistencias: [] },
-  ];
+  segment: string = 'Scan';  // Segmento para cambiar entre las vistas de escaneo y asistencias
+  result: string | null = null; // Resultado del QR escaneado
+  assignments: any[] = []; // Asignaciones (clases)
 
   constructor(
     private platform: Platform,
     private modalController: ModalController,
     private toastController: ToastController,
     private authService: AuthService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private alertController: AlertController,
+    private assignmentService: AssignmentService,
+    private cdRef: ChangeDetectorRef // Inyección de ChangeDetectorRef
+  ) {}
 
-  ngOnInit(): void {
-
-    if (this.platform.is('capacitor')) {
-
-      BarcodeScanner.isSupported().then();
-      BarcodeScanner.checkPermissions().then();
-      BarcodeScanner.removeAllListeners();
-    }
-
+  ngOnInit() {
+    this.cargarAsignaciones();  // Cargar las asignaciones desde el servicio
   }
 
   cerrarSesion() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/welcome']);
   }
 
-  // Scan QR y guardado en 'scanResult'
+  // Función para mostrar los horarios de la clase en un popup
+  async mostrarHorario(clase: any) {
+    const alert = await this.alertController.create({
+      header: clase.nombre,
+      subHeader: 'Horarios Disponibles:',
+      message: clase.horarios.join('  ;  '),
+      buttons: ['Cerrar']
+    });
+    await alert.present();
+  }
+
+  // Función para abrir el escaneo del QR
   async startScan() {
     const modal = await this.modalController.create({
       component: BarcodeScanningModalComponent,
-      cssClass: 'barcode-scanning-modal',
-      showBackdrop: false,
-      componentProps: {
-        formats: [],
-        LensFacing: LensFacing.Back
+      componentProps: { formats: ['QR_CODE'] }
+    });
+
+    modal.onDidDismiss().then((data) => {
+      const barcode = data.data?.barcode;
+      if (barcode) {
+        this.processScanResult(barcode);
+      } else {
+        console.log('No se ha escaneado ningún código QR.');
       }
     });
 
     await modal.present();
+  }
 
-    const { data } = await modal.onWillDismiss();
-
-    if (data) {
-      const qrContent = data?.barcode?.displayValue;
-      this.scanResult = qrContent;
-
-      const [nombreClase, seccion, sala, profesor] = qrContent?.split('|') || [];
-
-      const clase = this.clasesEstudiante.find(c => c.nombre === nombreClase);
+  // Método para procesar el escaneo del QR y registrar la asistencia
+  private async processScanResult(qrData: string): Promise<void> {
+    const qrParts = qrData.split('|');
+    if (qrParts.length >= 3) {
+      const [asignatura, seccion, sala] = qrParts;
+      const clase = this.assignments.find(c => c.nombre === asignatura && c.seccion === seccion && c.sala === sala);
 
       if (clase) {
-        clase.asistencias.push({
-          fecha: new Date().toISOString(),
-          seccion,
-          sala,
-          profesor,
+        const fechaActual = new Date().toLocaleString('es-CL', {
+          day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
         });
-        console.log(`Asistencia registrada para ${nombreClase}`);
+
+        // Crear el objeto de asistencia
+        const asistencia = { 
+          id: clase.id, 
+          asignatura, 
+          seccion, 
+          sala, 
+          fecha: fechaActual, 
+          claseInfo: clase.nombre 
+        };
+
+        // Agregar la asistencia a la clase
+        if (!clase.asistencias) {
+          clase.asistencias = [];
+        }
+        clase.asistencias.push(asistencia);
+
+        // Mostrar el mensaje de confirmación
+        this.showToast(`Asistencia registrada para: ${asignatura} - Sección: ${seccion}, Fecha: ${fechaActual}`);
+
+        // Actualizar el resultado en la vista para mostrar la asistencia escaneada
+        this.result = `Asistencia registrada para: ${asignatura} - Sección: ${seccion}, Fecha: ${fechaActual}`;
+
+        // Llamar a detectChanges para actualizar la vista
+        this.cdRef.detectChanges();
       } else {
-        console.error('Clase no encontrada');
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'El QR escaneado no corresponde a ninguna clase válida.',
+          buttons: ['Cerrar']
+        });
+        await alert.present();
       }
+    } else {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Formato de QR inválido.',
+        buttons: ['Cerrar']
+      });
+      await alert.present();
     }
   }
 
-
-  mostrarAsistencias(clase: any) {
-    console.log(`Asistencias para ${clase.nombre}:`, clase.asistencias);
-  }
-
-  writeToClipboard = async () => {
-    await Clipboard.write({
-      string: this.scanResult
-    });
-
+  // Función para mostrar el mensaje de confirmación
+  async showToast(message: string) {
     const toast = await this.toastController.create({
-      message: 'Copited to clipboard',
-      duration: 1000,
-      color: 'tertiary',
-      icon: 'clipboard-outline',
-      position: 'middle'
+      message: message,
+      duration: 5000,  // Duración del mensaje en milisegundos (5 segundos)
+      position: 'bottom'
     });
     toast.present();
   }
-};
 
+  // Cargar las asignaciones desde el servicio
+  cargarAsignaciones() {
+    this.assignments = this.assignmentService.getAssignments();
+  }
 
+  // Alternar la visibilidad de las asistencias de una clase
+  toggleClase(clase: any) {
+    clase.mostrarAsistencia = !clase.mostrarAsistencia;
+  }
+
+  // Navegar a la vista de asistencias con los datos escaneados
+  mostrarAsistencia(clase: any) {
+    this.router.navigate(['/asistencias'], { state: { clase: clase } });
+  }
+}

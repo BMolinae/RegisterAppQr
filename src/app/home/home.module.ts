@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
-
+import { AssignmentService } from '../services/assignment.service';
 import { HomePageRoutingModule } from './home-routing.module';
 import { QrCodeModule } from 'ng-qrcode';
 import { BarcodeScanningModalComponent } from './barcode-scanning-modal.component';
@@ -16,6 +16,7 @@ import { BarcodeScanningModalComponent } from './barcode-scanning-modal.componen
     HomePageRoutingModule,
     QrCodeModule
   ],
-  declarations: [HomePage, BarcodeScanningModalComponent]
+  declarations: [HomePage, BarcodeScanningModalComponent],
+  providers: [AssignmentService],  // Registra el servicio aquí
 })
 export class HomePageModule {}

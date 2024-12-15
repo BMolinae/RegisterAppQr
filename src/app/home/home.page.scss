@@ -1,91 +1,129 @@
-ion-segment{
-  margin-top: 20px;
- }
- 
- .segment{
-   padding: 30px 5px;
- }
- 
- .submit {
-  height: 44px;
-  --border-radius: 10px;
-  --background: var(--ion-color-tertiary);
-  width: 100%; /* Asegura que el botón ocupe todo el espacio */
-}
-
- 
- .scan-label{
-   margin: 25px 0;
- }
- 
- img{
-   width: 200px;
- }
- 
- .result{
-   color: black;
-   border: 1px dashed var(--ion-color-medium);
-   border-radius: 10px;
-   margin: 30px 0;
- 
-   p{
-     color: var(--ion-color-tertiary);
-     margin-bottom: 5px;
-     font-size: 11px;
-   }
- 
-   h6{
-     margin-top: 0;
-   }
- }
- 
- ion-button{
-   text-transform: none;
- }
- 
- ion-textarea{
-   --highlight-color-valid: var(--ion-color-tertiary);
-   text-align: start;
- }
- 
- #qrImage{
-   padding: 20px 0;
- }
- 
- .qr-wrapper{
-   width: 230px; 
-   min-height: 230px;
-   background: var(--ion-color-tertiary); 
-   border-radius: 20px;
- }
- 
- .qr-placeholder{
-   width: 200px; 
- }
- 
- .d-flex-center {
+ion-content {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  padding: 20px;
+  background-color: #e9ecef; /* Fondo claro con un tono profesional */
 }
 
-ion-item-group {
-  margin-bottom: 15px;
-}
-
-ion-item {
-  --background: #f9f9f9;
-  --border-radius: 8px;
+ion-content h1 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333; /* Un tono oscuro profesional */
 }
 
 ion-list {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaciado entre tarjetas */
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+ion-card-title {
+  font-size: 1.25rem;
+  color: #222;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+ion-card-subtitle {
+  font-size: 1rem;
+  color: #555;
+}
+.scan-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+.scan-image {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+}
+
+.card-content {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.scan-button {
+  --background: #007bff; /* Azul estándar */
+  --background-hover: #005bb5; /* Azul más oscuro */
+  color: #ffffff;
+  font-weight: normal;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  border-radius: 5px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+.scan-label {
+  font-size: 1.25rem; /* Aumentar el tamaño del texto */
+  color: #333; /* Asegurar que sea de color oscuro */
+  margin-top: 10px;
+}
+.segment {
+  text-align: center;
+  padding: 30px; /* Más espacio alrededor del área de escaneo */
+  border: 2px dashed #ccc; /* Borde para hacer más visible el área */
+  border-radius: 12px; /* Bordes redondeados */
+  background-color: #f0f0f0; /* Fondo más claro */
+  margin-top: 20px; /* Espacio superior */
+}
+
+.scan-button:hover {
+  --background: var(--background-hover);
+}
+
+.no-asistencia {
+  text-align: center;
+  color: #888; /* Un tono gris claro */
+  font-style: italic;
   margin-top: 10px;
 }
 
-.submit {
-  --background: var(--ion-color-primary);
-  color: #fff;
-}
+@media (max-width: 768px) {
+  .scan-image {
+    max-width: 80%; /* Reducir ligeramente el tamaño de la imagen en pantallas pequeñas */
+  }
 
- 
- 
+  .scan-button {
+    font-size: 1rem;
+    padding: 12px 18px; /* Un poco más de padding en pantallas pequeñas */
+  }
+
+  .segment {
+    padding: 20px; /* Un poco menos de padding */
+  }
+
+  .scan-label {
+    font-size: 1.1rem; /* Hacer el texto más grande en pantallas pequeñas */
+  }
+}

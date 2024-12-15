@@ -42,19 +42,25 @@ export class HomeDocentePage implements OnInit {
 
   cerrarSesion() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/welcome']);
   }
 
-  onClassChange(event: any) {
-    const claseSeleccionada = event.detail.value;
+ onClassChange(event: any) {
+  const claseSeleccionada = event.detail.value;
   
-    if (!claseSeleccionada) {
-      this.qrText = 'Predeterminado';
-    } else {
-      this.qrText = `${claseSeleccionada.nombre}|${claseSeleccionada.seccion}|${claseSeleccionada.sala}|`;
-    }
+  if (!claseSeleccionada) {
+    this.qrText = ''; // No generar un QR vacío
+  } else {
+    const fecha = new Date().toISOString(); // Fecha actual
+    this.qrText = JSON.stringify({
+      idClase: claseSeleccionada.seccion, // ID único de la clase
+      nombreClase: claseSeleccionada.nombre,
+      sala: claseSeleccionada.sala,
+      profesor: claseSeleccionada.profesor,
+      fecha,
+    });
   }
-  
+}
 
   captureScreen() {
     const elemnt = document.getElementById('qrImage') as HTMLElement;
