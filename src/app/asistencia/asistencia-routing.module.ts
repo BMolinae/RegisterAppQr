@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AsistenciaPage } from './asistencias.page'; // Corregir nombre
+import { AsistenciaPage } from './asistencia.page'; // Corregir nombre
 
 const routes: Routes = [
   {
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AsistenciasPageRoutingModule {}
+export class AsistenciaPageRoutingModule {}

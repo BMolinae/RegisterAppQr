@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AsistenciasPageRoutingModule } from './asistencia-routing.module';
+import { AsistenciaPageRoutingModule } from './asistencia-routing.module';
 
-import { AsistenciaPage } from './asistencias.page'; // Corregir nombre
+import { AsistenciaPage } from './asistencia.page'; // Corregir nombre
 
 
 @NgModule({
@@ -14,8 +14,8 @@ import { AsistenciaPage } from './asistencias.page'; // Corregir nombre
     CommonModule,
     FormsModule,
     IonicModule,
-    AsistenciasPageRoutingModule
+    AsistenciaPageRoutingModule
   ],
   declarations: [AsistenciaPage]
 })
-export class AsistenciasPageModule {}
+export class AsistenciaPageModule {}
