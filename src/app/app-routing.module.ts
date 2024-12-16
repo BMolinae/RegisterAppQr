@@ -22,8 +22,8 @@ const routes: Routes = [
     loadChildren: () => import('./home-docente/home-docente.module').then( m => m.HomeDocentePageModule)
   },
   {
-    path: 'asistencias',
-    loadChildren: () => import('./asistencia/asistencia.module').then( m => m.AsistenciasPageModule)
+    path: 'asistencia',
+    loadChildren: () => import('./asistencia/asistencia.module').then( m => m.AsistenciaPageModule)
   },
 
 

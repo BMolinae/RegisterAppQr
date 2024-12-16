@@ -23,7 +23,7 @@
     <ion-list-header>
       <ion-label>Asistencias Registradas</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let asistencia of clase.asistencias">
+    <ion-item *ngFor="let asistencia of clase.asistencia">
       <ion-label>
         <h2>{{ asistencia.fecha }}</h2>
         <p>{{ asistencia.claseInfo }} - Sección: {{ asistencia.seccion }}</p>
@@ -31,7 +31,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-card *ngIf="!clase.asistencias || clase.asistencias.length === 0">
+  <ion-card *ngIf="!clase.asistencia || clase.asistencia.length === 0">
     <ion-card-header>
       <ion-card-title>No hay asistencias registradas</ion-card-title>
     </ion-card-header>
