@@ -11,7 +11,7 @@ import { AssignmentService } from '../services/assignment.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  segment: string = 'Scan';  // Segmento para cambiar entre las vistas de escaneo y asistencias
+  segment: string = 'Scan';  // Segmento para cambiar entre las vistas de escaneo y asistencia
   result: string | null = null; // Resultado del QR escaneado
   assignments: any[] = []; // Asignaciones (clases)
 
@@ -39,7 +39,7 @@ export class HomePage implements OnInit {
   async mostrarHorario(clase: any) {
     const alert = await this.alertController.create({
       header: clase.nombre,
-      subHeader: 'Horarios Disponibles:',
+      subHeader: 'Días de clases:',
       message: clase.horarios.join('  ;  '),
       buttons: ['Cerrar']
     });
@@ -56,6 +56,7 @@ export class HomePage implements OnInit {
     modal.onDidDismiss().then((data) => {
       const barcode = data.data?.barcode;
       if (barcode) {
+        console.log('Se ha escaneado correctamente :).');
         this.processScanResult(barcode);
       } else {
         console.log('No se ha escaneado ningún código QR.');
@@ -141,6 +142,6 @@ export class HomePage implements OnInit {
 
   // Navegar a la vista de asistencias con los datos escaneados
   mostrarAsistencia(clase: any) {
-    this.router.navigate(['/asistencias'], { state: { clase: clase } });
+    this.router.navigate(['/asistencia'], { state: { clase: clase } });
   }
 }
